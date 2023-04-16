@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "lib/sidekiq/job_signal/version"
-require_relative "lib/sidekiq/job_signal/middleware"
+require_relative "lib/sidekiq/job_signal/server_middleware"
 require_relative "lib/sidekiq/job_signal"
 
 Gem::Specification.new do |spec|
