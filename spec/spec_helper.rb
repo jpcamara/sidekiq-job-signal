@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require "sidekiq/job/signal"
+require "sidekiq/job_signal"
+require "pry-byebug"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
