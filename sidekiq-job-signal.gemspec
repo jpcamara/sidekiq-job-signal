@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "lib/sidekiq/job_signal/version"
+lib = File.expand_path("lib", __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require "sidekiq/job_signal/version"
 
 Gem::Specification.new do |spec|
   spec.name = "sidekiq-job-signal"
