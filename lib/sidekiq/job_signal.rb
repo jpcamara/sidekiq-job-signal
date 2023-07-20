@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require "sidekiq"
 require_relative "job_signal/version"
 require_relative "job_signal/server_middleware"
 require_relative "job_signal/receiver"
+require_relative "job_signal/web"
 
 module Sidekiq
   module JobSignal

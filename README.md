@@ -14,6 +14,31 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
+```rb
+Sidekiq::JobSignal.quit(jid: "12345")
+
+# log:
+#   Turned #{12345}:#{JobWorkerClass} into a no-op: [1,2,3]"
+
+# middleware.rb
+Sidekiq.configure_server do |config|
+  config.server_middleware do |chain|
+    chain.add ::Sidekiq::JobSignal::ServerMiddleware
+  end
+
+  Sidekiq::JobSignal.on_quit do |job|
+    Sidekiq.logger.info "Job was cancelled!"
+    Sidekiq.logger.info job
+  end
+end
+```
+
+If you like to enable the Sidekiq Web UI for quitting jobs, you can include the following in some kind of initialization file. This will enable a new "Signals" tab.
+
+```rb
+Sidekiq::Web.register Sidekiq::JobSignal::Web
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

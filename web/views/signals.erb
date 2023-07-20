@@ -1,0 +1,55 @@
+<%
+processes = Sidekiq::ProcessSet.new
+@workset = Sidekiq::WorkSet.new
+@total_size = @workset.size
+@count = 10
+%>
+
+<div class="header-container">
+  <h1><%= t('Jobs') %></h1>
+  <% if @workset.size > 0 && @total_size > @count %>
+    <%= erb :_paging, locals: { url: "#{root_path}busy" } %>
+  <% end %>
+</div>
+
+<div class="table_container">
+  <table class="workers table table-hover table-bordered table-striped">
+    <thead>
+      <th><%= t('JID') %></th>
+      <th><%= t('Queue') %></th>
+      <th><%= t('Job') %></th>
+      <th><%= t('Arguments') %></th>
+      <th><%= t('Started') %></th>
+      <th><%= t('Signal') %></th>
+      <th>&nbsp;</th>
+    </thead>
+    <% @workset.each do |process, thread, msg| %>
+      <% job = Sidekiq::JobRecord.new(msg['payload']) %>
+      <tr>
+        <td><%= job.jid %></td>
+        <td>
+          <a href="<%= root_path %>queues/<%= msg['queue'] %>"><%= msg['queue'] %></a>
+        </td>
+        <td>
+          <%= job.display_class %>
+          <%= display_tags(job, nil) %>
+        </td>
+        <td>
+          <div class="args"><%= display_args(job.display_args) %></div>
+        </td>
+        <td><%= relative_time(Time.at(msg['run_at'])) %></td>
+        <td><%= Sidekiq::JobSignal.quitting?(jid: job.jid) ? "quit" : "" %></td>
+        <td>
+          <form method="POST">
+            <%= csrf_tag %>
+            <input type="hidden" name="identity" value="<%= process['identity'] %>"/>
+
+            <div class="btn-group pull-right flip">
+              <button class="btn btn-xs btn-warn" type="submit" name="quit" value="<%= job.jid %>"><%= t('Quit') %></button>
+            </div>
+          </form>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

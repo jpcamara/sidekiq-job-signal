@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "lib/sidekiq/job_signal/version"
-require_relative "lib/sidekiq/job_signal/server_middleware"
 require_relative "lib/sidekiq/job_signal"
 
 Gem::Specification.new do |spec|
@@ -31,5 +29,5 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "sidekiq", ">= 6.0"
+  spec.add_dependency "sidekiq", [">= 6.5", "< 7.0"]
 end

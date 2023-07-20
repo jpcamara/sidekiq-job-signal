@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sidekiq-job-signal (0.1.0)
-      sidekiq (>= 6.0)
+      sidekiq (>= 6.5, < 7.0)
 
 GEM
   remote: https://rubygems.org/
@@ -85,9 +85,9 @@ DEPENDENCIES
   pry-byebug
   rake (~> 13.0)
   rspec (~> 3.0)
-  sidekiq (~> 6.0)
+  sidekiq (~> 6.5)
   sidekiq-job-signal!
   standard (~> 1.3)
 
 BUNDLED WITH
-   2.4.6
+   2.3.11
