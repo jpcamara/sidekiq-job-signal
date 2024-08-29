@@ -2,9 +2,9 @@
 
 module Sidekiq
   module JobSignal
-    class Receiver
+    module Receiver
       def quitting?
-        ::Sidekiq::JobSignal.quitting?(jid: jid, worker_class: self.class.name)
+        ::Sidekiq::JobSignal.quitting?(jid: jid, job_class: self.class.name)
       end
     end
   end

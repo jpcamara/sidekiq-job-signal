@@ -8,6 +8,10 @@ Install the gem and add to the application's Gemfile by executing:
 
     $ bundle add sidekiq-job-signal
 
+In your Gemfile, specify the gem as:
+
+    gem "sidekiq-job-signal", require: "sidekiq/job_signal"
+
 If bundler is not being used to manage dependencies, install the gem by executing:
 
     $ gem install sidekiq-job-signal
@@ -16,14 +20,32 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ```rb
 Sidekiq::JobSignal.quit(jid: "12345")
+Sidekiq::JobSignal.quit(job_class: "ExampleJob")
 
 # log:
 #   Turned #{12345}:#{JobWorkerClass} into a no-op: [1,2,3]"
 
+# If you want to add the `quitting?` method to your job
+class ExampleJob
+  include Sidekiq::Job
+  include Sidekiq::JobSignal::Receiver
+
+  def perform
+    if quitting?
+      # finish early...
+    end
+  end
+end
+
 # middleware.rb
 Sidekiq.configure_server do |config|
   config.server_middleware do |chain|
+    # Defaults to by_class: false, by_jid: true
     chain.add ::Sidekiq::JobSignal::ServerMiddleware
+    # OR
+    chain.add ::Sidekiq::JobSignal::ServerMiddleware, by_class: true
+    # OR
+    chain.add ::Sidekiq::JobSignal::ServerMiddleware, by_jid: false, by_class: true
   end
 
   Sidekiq::JobSignal.on_quit do |job|

@@ -17,29 +17,29 @@ module Sidekiq
         handlers << block
       end
 
-      def quit(worker_class: "", jid: "")
+      def quit(job_class: "", jid: "")
         ::Sidekiq.redis do |r|
           r.pipelined do |pipeline|
             pipeline.set "jobsignal-#{jid}", "quit", ex: 86_400 if jid && !jid.empty?
-            pipeline.set "jobsignal-#{worker_class}", "quit", ex: 86_400 if worker_class && !worker_class.empty?
+            pipeline.set "jobsignal-#{job_class}", "quit", ex: 86_400 if job_class && !job_class.empty?
           end
         end
       end
 
-      def delete_signal(worker_class: "", jid: "")
+      def delete_signal(job_class: "", jid: "")
         ::Sidekiq.redis do |r|
           r.pipelined do |pipeline|
             pipeline.del("jobsignal-#{jid}") if jid && !jid.empty?
-            pipeline.del("jobsignal-#{worker_class}") if worker_class && !worker_class.empty?
+            pipeline.del("jobsignal-#{job_class}") if job_class && !job_class.empty?
           end
         end
       end
 
-      def quitting?(worker_class: "", jid: "")
+      def quitting?(job_class: "", jid: "")
         results = ::Sidekiq.redis do |r|
           r.pipelined do |pipeline|
             pipeline.get("jobsignal-#{jid}") if jid && !jid.empty?
-            pipeline.get("jobsignal-#{worker_class}") if worker_class && !worker_class.empty?
+            pipeline.get("jobsignal-#{job_class}") if job_class && !job_class.empty?
           end
         end
         results.include?("quit")

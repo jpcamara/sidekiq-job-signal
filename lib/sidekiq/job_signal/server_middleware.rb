@@ -5,19 +5,36 @@ module Sidekiq
     class ServerMiddleware
       include ::Sidekiq::ServerMiddleware
 
-      def call(worker, _job, _queue)
-        signalled = ::Sidekiq::JobSignal.quitting?(worker_class: worker.class.name, jid: worker.jid)
-        logger.info "Sidekiq::JobSignal::ServerMiddleware.call: signalled=#{signalled}"
-        if signalled
-          def worker.perform(*args)
-            logger.info "Turned #{jid}:#{self.class} into a no-op: #{args.inspect}"
-          end
-        end
+      def initialize(options = {})
+        @by_jid = options.fetch(:by_jid, true)
+        @by_class = options.fetch(:by_class, false)
+      end
 
+      def call(job, job_payload, _queue)
+        signalled = ::Sidekiq::JobSignal.quitting?(**quit_options(job))
+        logger.debug "#{self.class}.call: signalled=#{signalled}"
+        noop_job(job) if signalled
         yield
       ensure
-        logger.info "Sidekiq::JobSignal::ServerMiddleware.call: ensure signalled=#{signalled}"
-        ::Sidekiq::JobSignal.handlers.each { |handler| handler.call(worker) } if signalled
+        logger.debug "#{self.class}.call: ensure signalled=#{signalled}"
+        ::Sidekiq::JobSignal.handlers.each { |handler| handler.call(job) } if signalled
+      end
+
+      private
+
+      attr_reader :by_jid, :by_class
+
+      def quit_options(job)
+        {}.tap do |options|
+          options[:job_class] = job.class.name if by_class
+          options[:jid] = job.jid if by_jid
+        end
+      end
+
+      def noop_job(job)
+        def job.perform(*args)
+          logger.info "Turned #{jid}:#{self.class} into a no-op: #{args.inspect}"
+        end
       end
     end
   end
