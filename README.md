@@ -55,7 +55,7 @@ Sidekiq.configure_server do |config|
 end
 ```
 
-If you like to enable the Sidekiq Web UI for quitting jobs, you can include the following in some kind of initialization file. This will enable a new "Signals" tab.
+If you'd like to enable the Sidekiq Web UI for quitting jobs, you can include the following in some kind of initialization file. This will enable a new "Signals" tab.
 
 ```rb
 Sidekiq::Web.register Sidekiq::JobSignal::Web
