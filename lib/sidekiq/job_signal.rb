@@ -44,6 +44,20 @@ module Sidekiq
         end
         results.include?("quit")
       end
+
+      # Helper method to register the Web UI with version detection
+      # Supports both Sidekiq 7.x and 8.0+ registration patterns
+      def register_web_ui
+        if defined?(::Sidekiq::Web) && ::Sidekiq::Web.respond_to?(:configure)
+          # Sidekiq 8.0+ pattern
+          ::Sidekiq::Web.configure do |config|
+            config.register(Sidekiq::JobSignal::Web)
+          end
+        elsif defined?(::Sidekiq::Web)
+          # Sidekiq 7.x pattern
+          ::Sidekiq::Web.register(Sidekiq::JobSignal::Web)
+        end
+      end
     end
   end
 end
