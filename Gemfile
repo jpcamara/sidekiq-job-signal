@@ -11,6 +11,6 @@ gem "rspec", "~> 3.0"
 
 gem "standard", "~> 1.3"
 
-gem "sidekiq", "~> 6.5"
+gem "sidekiq", "~> 7.3"
 
 gem "pry-byebug"

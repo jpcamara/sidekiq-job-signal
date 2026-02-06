@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description = "Signal a job to quit, and block the job from executing through middleware."
   spec.homepage = "https://github.com/jpcamara/sidekiq-job-signal"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.7.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/jpcamara/sidekiq-job-signal"
@@ -32,5 +32,5 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "sidekiq", [">= 6.5", "< 7.0"]
+  spec.add_dependency "sidekiq", [">= 7.3", "< 9.0"]
 end

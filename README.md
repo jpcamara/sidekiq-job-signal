@@ -2,6 +2,12 @@
 
 Signal a job to quit, and block the job from executing through middleware.
 
+## Requirements
+
+- Ruby 2.7+ (Ruby 3.2+ required for Sidekiq 8.0+)
+- Sidekiq 7.3 - 8.x
+- Redis 7.0+ (or compatible)
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
@@ -58,7 +64,54 @@ end
 If you'd like to enable the Sidekiq Web UI for quitting jobs, you can include the following in some kind of initialization file. This will enable a new "Signals" tab.
 
 ```rb
-Sidekiq::Web.register Sidekiq::JobSignal::Web
+# Recommended: Use the helper method that works with both Sidekiq 7.x and 8.0+
+Sidekiq::JobSignal.register_web_ui
+
+# Or for Sidekiq 8.0+ you can use the new configuration pattern directly:
+Sidekiq::Web.configure do |config|
+  config.register(Sidekiq::JobSignal::Web)
+end
+
+# Or for Sidekiq 7.x you can use the legacy pattern (still supported):
+Sidekiq::Web.register(Sidekiq::JobSignal::Web)
+```
+
+## Upgrading from 0.1.x to 1.0.0
+
+Version 1.0.0 introduces breaking changes to support Sidekiq 7.3+ and 8.0+:
+
+### Breaking Changes
+
+1. **Minimum Ruby version increased**: Now requires Ruby 2.7+ (was 2.6+)
+2. **Minimum Sidekiq version increased**: Now requires Sidekiq 7.3+ (was 6.5+)
+3. **Dropped Sidekiq 6.x support**: If you're on Sidekiq 6.x, stay on sidekiq-job-signal 0.1.x
+
+### Migration Steps
+
+1. Ensure you're on Ruby 2.7 or higher (Ruby 3.2+ required if using Sidekiq 8.0+)
+2. Upgrade Sidekiq to 7.3 or higher: `bundle update sidekiq`
+3. Update sidekiq-job-signal to 1.0.0: `bundle update sidekiq-job-signal`
+4. (Optional) Update your Web UI registration to use the new helper method:
+   ```rb
+   # Old (still works):
+   Sidekiq::Web.register Sidekiq::JobSignal::Web
+
+   # New (recommended):
+   Sidekiq::JobSignal.register_web_ui
+   ```
+
+### What's New
+
+- **Sidekiq 8.0+ support**: Full compatibility with the latest Sidekiq 8.x releases
+- **Version detection**: The gem automatically detects your Sidekiq version and uses the appropriate Web UI registration method
+- **Helper method**: New `Sidekiq::JobSignal.register_web_ui` method for simplified Web UI setup
+
+### Staying on 0.1.x
+
+If you need to stay on Sidekiq 6.x or Ruby < 2.7, you can pin to version 0.1.x in your Gemfile:
+
+```rb
+gem "sidekiq-job-signal", "~> 0.1.0", require: "sidekiq/job_signal"
 ```
 
 ## Development
