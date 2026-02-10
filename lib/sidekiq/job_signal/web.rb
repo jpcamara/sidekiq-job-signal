@@ -14,7 +14,8 @@ module Sidekiq
           Sidekiq::JobSignal.quit(jid: params["quit"]) if params["quit"]
           render(:erb, File.read("#{ROOT}/views/signals.erb"))
         end
-        app.tabs["Signals"] = "signals"
+        # Sidekiq 7.x uses app.tabs, Sidekiq 8.x uses tab: keyword in register_extension
+        app.tabs["Signals"] = "signals" if app.respond_to?(:tabs)
       end
     end
   end
