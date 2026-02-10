@@ -5,7 +5,7 @@ Signal a job to quit, and block the job from executing through middleware.
 ## Requirements
 
 - Ruby 2.7+ (Ruby 3.2+ required for Sidekiq 8.0+)
-- Sidekiq 7.3 - 8.x
+- Sidekiq 7.3 - 8.1.x
 - Redis 7.0+ (or compatible)
 
 ## Installation
@@ -64,15 +64,15 @@ end
 If you'd like to enable the Sidekiq Web UI for quitting jobs, you can include the following in some kind of initialization file. This will enable a new "Signals" tab.
 
 ```rb
-# Recommended: Use the helper method that works with both Sidekiq 7.x and 8.0+
+# Recommended: Use the helper method that works with Sidekiq 7.x, 8.0, and 8.1+
 Sidekiq::JobSignal.register_web_ui
 
-# Or for Sidekiq 8.0+ you can use the new configuration pattern directly:
+# Or for Sidekiq 8.1+ you can use the new extension pattern directly:
 Sidekiq::Web.configure do |config|
-  config.register(Sidekiq::JobSignal::Web)
+  config.register_extension(Sidekiq::JobSignal::Web, name: "Signals", tab: "signals", index: "signals")
 end
 
-# Or for Sidekiq 7.x you can use the legacy pattern (still supported):
+# Or for Sidekiq 7.x (legacy pattern):
 Sidekiq::Web.register(Sidekiq::JobSignal::Web)
 ```
 

@@ -11,13 +11,13 @@
 
 ### Added
 
-- **Sidekiq 8.0+ support** - Full compatibility with Sidekiq 8.x releases
+- **Sidekiq 8.0+ support** - Full compatibility with Sidekiq 8.x releases (including 8.1+)
 - **New `Sidekiq::JobSignal.register_web_ui` helper method** - Automatically detects Sidekiq version and uses the appropriate Web UI registration pattern
-- **Version detection** - The gem automatically detects whether you're using Sidekiq 7.x or 8.0+ and handles registration accordingly
+- **Version detection** - The gem automatically detects whether you're using Sidekiq 7.x, 8.0, or 8.1+ and handles registration accordingly
 
 ### Changed
 
-- Updated Sidekiq dependency to support versions 7.3 through 8.x: `">= 7.3", "< 9.0"`
+- Updated Sidekiq dependency to support versions 7.3 through 8.1: `">= 7.3", "< 8.2"`
 - Updated required Ruby version to match Sidekiq 7.3 requirements: `">= 2.7.0"` (Note: Sidekiq 8.0+ requires Ruby 3.2+)
 - Enhanced README with comprehensive upgrade guide and migration instructions
 - Updated Web UI registration documentation to show all supported patterns
@@ -45,8 +45,12 @@ The core middleware and Redis operations were already compliant with Sidekiq 7.3
 
 The main changes were:
 1. Updating version constraints in gemspec
-2. Adding Web UI registration helper with version detection
+2. Adding Web UI registration helper with version detection for Sidekiq 7.x, 8.0, and 8.1+
 3. Comprehensive documentation updates
+
+**Sidekiq Version Support:**
+- Sidekiq 7.x: Uses `Sidekiq::Web.register()`
+- Sidekiq 8.1+: Uses `config.register_extension()` with keyword arguments
 
 ## [0.1.0] - 2023-04-02
 
